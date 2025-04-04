@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .total {
+            width: 100%;
+        }
+
+        .upper {
+            display: flex;
+            align-items: center;
+            background-color: darkblue;
+            padding: 15px;
+            color: white;
+            justify-content: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .upper input {
+            width: 50%;
+            margin-left: 20px;
+            height: 30px;
+            padding: 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .outer {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 70px;
+            /* To avoid overlap due to fixed header */
+            padding: 20px;
+        }
+
+        .image1 {
+            width: 22%;
+            /* 4 items per row */
+            margin: 1%;
+            background: #1a1a1a;
+            padding-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .image1:hover {
+            transform: scale(1.05);
+        }
+
+        .image1 img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .inner {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: aliceblue;
+            color: black;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 1024px) {
+            .image1 {
+                width: 30%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .image1 {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .image1 {
+                width: 90%;
+            }
+        }
+
+
+        ul {
+            display: flex;
+            list-style: none;
+            margin-left: 200px;
+            justify-content: center;
+        }
+
+        ul li button {
+            border: none;
+            padding: 5px;
+            background-color: blueviolet;
+            color: white;
+            font-size: 20px;
+        }
+
+
+        ul li {
+            margin: 12px;
+
+        }
+
+        @media (max-width: 500px) {
+  .upper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .upper h1 {
+    margin-bottom: 10px;
+  }
+
+  .upper input {
+    width: 90%;
+    margin-left: 0;
+  }
+
+  ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-left: 0;
+    margin-top: 20px;
+  }
+
+  ul li button {
+    font-size: 16px;
+    padding: 8px 12px;
+  }
+}
+
+
+    </style>
+</head>
+
+<body>
+    <div class="total">
+        <div class="upper">
+            <h1>Search Movie</h1>
+            <input type="text" placeholder="Search movie here.." class="input">
+        </div>
+        <div class="outer"></div>
+    </div>
+
+    <div>
+        <ul>
+            <!-- <li><button>1</button></li> -->
+
+        </ul>
+    </div>
+
+</body>
+<script>
+    window.onload = function () {
+        let outer = document.querySelector(".outer")
+        let ul = document.querySelector("ul")
+        let myinput = document.querySelector(".input")
+
+
+        let showcard = async (searchname, id = 1) => {
+
+            let api;
+
+            if (searchname == undefined || searchname == "") {
+                api = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=04c35731a5ee918f014970082a0088b1&page=${id}`
+
+            }
+            else {
+                api = `https://api.themoviedb.org/3/search/movie?&api_key=04c35731a5ee918f014970082a0088b1&query=${searchname}`
+            }
+            let data = await fetch(api)
+            let jsondata = await data.json()
+            let newdata = jsondata.results
+
+            let imgurl = "https://image.tmdb.org/t/p/w1280"
+
+            outer.innerHTML = ""
+
+            newdata.forEach((v, i) => {
+                // console.log(v)
+                outer.innerHTML += `
+             <div class="image1">
+                    <img src="${imgurl + v.poster_path}">
+                    <div class="inner">
+                        <div class="left">${v.original_title}</div>
+                        <div class="right">${v.release_date || "N/A"}</div>
+                    </div>
+                </div>
+            `
+            })
+        }
+
+        showcard()
+
+
+
+        myinput.addEventListener("keyup", (event) => {
+            searchname = event.target.value
+            showcard(searchname, "")
+        })
+
+
+
+        for (i = 1; i <= 10; i++) {
+            ul.innerHTML += `
+        <li><button onclick=btn(${i})>${i}</button></li>
+        `
+        }
+
+        window.btn = (id) => {
+            showcard("", id)
+        }
+    }
+
+
+</script>
+
+</html>
