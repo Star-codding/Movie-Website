@@ -131,41 +131,34 @@
         }
 
         @media (max-width: 500px) {
-            .upper {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 10px;
-            }
+  .upper {
+    flex-direction: column;
+    align-items: center;
+  }
 
-            .upper h1 {
-                font-size: 22px;
-                width: 100%;
-                text-align: center;
-                margin-bottom: 10px;
-            }
+  .upper h1 {
+    margin-bottom: 10px;
+  }
 
-            .upper input {
-                width: 100%;
-                margin-left: 0;
-            }
+  .upper input {
+    width: 90%;
+    margin-left: 0;
+  }
 
-            ul {
-                flex-wrap: wrap;
-                justify-content: center;
-                margin: 20px 0;
-                padding: 0 10px;
-            }
+  ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-left: 0;
+    margin-top: 20px;
+  }
 
-            ul li {
-                margin: 6px;
-            }
+  ul li button {
+    font-size: 16px;
+    padding: 8px 12px;
+  }
+}
 
-            ul li button {
-                font-size: 16px;
-                padding: 8px 12px;
-                border-radius: 6px;
-            }
-        }
+
     </style>
 </head>
 
@@ -187,28 +180,33 @@
 
 </body>
 <script>
-    let outer = document.querySelector(".outer")
-    let showcard = async (searchname, id = 1) => {
+    window.onload = function () {
+        let outer = document.querySelector(".outer")
+        let ul = document.querySelector("ul")
+        let myinput = document.querySelector(".input")
 
-        let api;
 
-        if (searchname == undefined || searchname == "") {
-            api = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=04c35731a5ee918f014970082a0088b1&page=${id}`
-        }
-        else {
-            api = `https://api.themoviedb.org/3/search/movie?&api_key=04c35731a5ee918f014970082a0088b1&query=${searchname}`
-        }
-        let data = await fetch(api)
-        let jsondata = await data.json()
-        let newdata = jsondata.results
+        let showcard = async (searchname, id = 1) => {
 
-        let imgurl = "https://image.tmdb.org/t/p/w1280"
+            let api;
 
-        outer.innerHTML = ""
+            if (searchname == undefined || searchname == "") {
+                api = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=04c35731a5ee918f014970082a0088b1&page=${id}`
+            }
+            else {
+                api = `https://api.themoviedb.org/3/search/movie?&api_key=04c35731a5ee918f014970082a0088b1&query=${searchname}`
+            }
+            let data = await fetch(api)
+            let jsondata = await data.json()
+            let newdata = jsondata.results
 
-        newdata.forEach((v, i) => {
-            // console.log(v)
-            outer.innerHTML += `
+            let imgurl = "https://image.tmdb.org/t/p/w1280"
+
+            outer.innerHTML = ""
+
+            newdata.forEach((v, i) => {
+                // console.log(v)
+                outer.innerHTML += `
              <div class="image1">
                     <img src="${imgurl + v.poster_path}">
                     <div class="inner">
@@ -217,30 +215,30 @@
                     </div>
                 </div>
             `
+            })
+        }
+
+        showcard()
+
+
+
+        myinput.addEventListener("keyup", (event) => {
+            searchname = event.target.value
+            showcard(searchname, "")
         })
-    }
 
-    showcard()
 
-    let myinput = document.querySelector(".input")
 
-    myinput.addEventListener("keyup", (event) => {
-        searchname = event.target.value
-        showcard(searchname, "")
-    })
-
-    let ul = document.querySelector("ul")
-
-    for (i = 1; i <= 10; i++) {
-        ul.innerHTML += `
+        for (i = 1; i <= 10; i++) {
+            ul.innerHTML += `
         <li><button onclick=btn(${i})>${i}</button></li>
         `
-    }
+        }
 
-    let btn = (id) => {
-        showcard("", id)
+        window.btn = (id) => {
+            showcard("", id)
+        }
     }
-
 
 
 </script>
