@@ -209,7 +209,8 @@
                 // console.log(v)
                 outer.innerHTML += `
              <div class="image1">
-                    <img src="${imgurl + v.poster_path}">
+                    <img src="${v.poster_path ? imgurl + v.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'}">
+
                     <div class="inner">
                         <div class="left">${v.original_title}</div>
                         <div class="right">${v.release_date || "N/A"}</div>
